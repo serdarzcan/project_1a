@@ -1,0 +1,59 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/* 
+ * File:   gate.h
+ * Author: szc
+ *
+ * Created on November 13, 2015, 7:19 PM
+ */
+
+#ifndef GATE_H
+#define GATE_H
+
+#include <string>
+using namespace std;
+
+class Gate {
+public:
+    /* Keeps total numbers of gates, inputs and outputs in static integers. */
+    static int cnt_gates, cnt_inputs, cnt_outputs;
+
+    /* Name of the gate as in the input file and its type */
+    string name, type;
+    
+    /* Line number of the gate in the input file */
+    int no;
+    
+    /* Keeps number of fanout/fanin gates of this gate */
+    int gates_fout, gates_fin;
+    //vector<Gate> gates_fout, gates_fin;
+
+    /* Shows if the gate is primary input or output */
+    bool isInput, isOutput;
+    
+    Gate();
+    Gate(const Gate& orig);
+    virtual ~Gate();
+    
+    /* Getters and setters */
+    string getName();
+    int getNo();
+    void setName(string);
+    void setNo(int);
+    
+    void createGate(string);
+    
+    /*vector<Gate> getFanout();
+    vector<Gate> getFanin();
+    void addFanout(Gate g);
+    void addFanin(Gate g);
+    void removeFanout(Gate g);
+    void removeFanin(Gate g);*/
+};
+
+#endif /* GATE_H */
+
