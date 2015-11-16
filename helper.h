@@ -16,16 +16,16 @@
 
 #include <algorithm>
 
-using namespace std;
+//using namespace std;
 
 // Function to remove spaces in a string
-string removeSpaces(string s) {
+std::string removeSpaces(std::string s) {
     s.erase(remove(s.begin(), s.end(), ' '), s.end());
     return s;
 }
 
 // Extract string in between parentheses
-string extract(string s) {
+std::string extract(std::string s) {
     unsigned first = s.find('(');
     unsigned last = s.find(')');
     return s.substr(first+1, last-first-1);

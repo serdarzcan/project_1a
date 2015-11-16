@@ -15,6 +15,7 @@
 #define GATE_H
 
 #include <string>
+
 using namespace std;
 
 class Gate {
@@ -39,9 +40,9 @@ public:
     Gate(const Gate& orig);
     virtual ~Gate();
     
-    Gate createInput(string);
-    Gate createOutput(string);
-    void createGate(string);
+    //Gate createInput(string);
+    //Gate createOutput(string);
+    //void createGate(string);
     
     /*vector<Gate> getFanout();
     vector<Gate> getFanin();
