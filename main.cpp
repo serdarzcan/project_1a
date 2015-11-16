@@ -69,17 +69,66 @@ void process(string s) {
     // Check if it is an input
     if (s.find(str_in) == 0) {
         Gate g = createInput(s);
-        gateMap.insert({g.name, g});
-        cout << "Input created: " << endl;
-        cout << g.name << " " << g.isInput << " " << g.isOutput << endl;
+        gateMap.insert(make_pair(g.name, g)); //{{g.name, g}});
+        //cout << "Input created: " << endl;
+        //cout << g.name << " " << g.isInput << " " << g.isOutput << endl;
     } else if (s.find(str_out) == 0) {
         Gate g = createOutput(s);
-        gateMap.insert({g.name, g});
-        cout << "Output created: " << endl;
-        cout << g.name << " " << g.isInput << " " << g.isOutput << endl;
+        gateMap.insert({{g.name, g}});
+        //cout << "Output created: " << endl;
+        //cout << g.name << " " << g.isInput << " " << g.isOutput << endl;
     } else {
+        
         //cout << "Gate created" << endl;
     }
+}
+
+void test() {
+    //string s = "INPUT(G1gat)";
+    //cout << "text" << xxx << endl;
+    //cout << extract(s) << endl;
+    Gate g1, g2, g3, g4, g5, g6;
+    
+    g1.isInput = false;
+    g1.isOutput = true;
+    g1.name = "G22gat";
+    
+    g2.isInput = false;
+    g2.isOutput = true;
+    g2.name = "G23gat";
+    
+    g3.isInput = true;
+    g3.isOutput = true;
+    g3.name = "G1gat";
+    
+    g4.isInput = false;
+    g4.isOutput = true;
+    g4.name = "GG";
+    
+    g5.isInput = false;
+    g5.isOutput = true;
+    g5.name = "GGG";
+    
+    g6.isInput = false;
+    g6.isOutput = true;
+    g6.name = "G";
+    
+    std::unordered_map<std::string,Gate>
+              myrecipe,
+              mypantry = {{g1.name,g1},{g2.name,g2}};
+
+    std::pair<std::string,Gate> myshopping (g3.name, g3);
+
+    myrecipe.insert (myshopping);                        // copy insertion
+    //myrecipe.insert (std::make_pair<string,Gate>(g4.name, g4)); // move insertion
+    myrecipe.insert (mypantry.begin(), mypantry.end());  // range insertion
+    myrecipe.insert ( {{g5.name, g5},{g6.name, g6}} );    // initializer list insertion
+
+    std::cout << "myrecipe contains:" << std::endl;
+    for (auto& x: myrecipe)
+      std::cout << x.first << ": " << x.second.name.length() << std::endl;
+
+    std::cout << std::endl;
 }
 
 /*
@@ -126,9 +175,13 @@ int main(int argc, char** argv) {
         }
         
         cout << "Map size: " << gateMap.size() << endl;
-        //Gate g = gateMap["G22gat"];
         
-        for (auto &itr: gateMap) {
+        /*Gate gg;
+        bool ok = gateMap.insert({"G1gat", gg}).second;
+        cout << "inserting 1 -> \"another one\" " 
+              << (ok ? "succeeded" : "failed") << '\n';*/
+        
+        for (auto& itr: gateMap) {
             cout << itr.first << " : " << itr.second.name << endl;
         }
         cout << "Gate count: " << Gate::cnt_gates << endl;
@@ -140,10 +193,4 @@ int main(int argc, char** argv) {
 #endif
     
     return 0;
-}
-
-void test() {
-    string s = "INPUT(G1gat)";
-    //cout << "text" << xxx << endl;
-    cout << extract(s) << endl;
 }

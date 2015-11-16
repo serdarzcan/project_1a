@@ -40,6 +40,10 @@ public:
     Gate(const Gate& orig);
     virtual ~Gate();
     
+    bool operator==(const Gate &gate) const {
+        return (name == gate.name);
+    }
+    
     //Gate createInput(string);
     //Gate createOutput(string);
     //void createGate(string);
