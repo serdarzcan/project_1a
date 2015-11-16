@@ -39,12 +39,8 @@ public:
     Gate(const Gate& orig);
     virtual ~Gate();
     
-    /* Getters and setters */
-    string getName();
-    int getNo();
-    void setName(string);
-    void setNo(int);
-    
+    Gate createInput(string);
+    Gate createOutput(string);
     void createGate(string);
     
     /*vector<Gate> getFanout();

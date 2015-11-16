@@ -19,14 +19,31 @@ Gate::Gate(const Gate& orig) { }
 
 Gate::~Gate() { }
 
-string Gate::getName() { return name; }
-
-int Gate::getNo() { return no; }
-
-void Gate::setName(string s) { name = s; }
-
-void Gate::setNo(int i) { no = i; }
-
 void Gate::createGate(string s) {
     
+}
+
+Gate createInput(string s) {
+    // Create a gate and adjust its variables
+    Gate g;
+    g.isInput = true;
+    g.isOutput = false;
+    g.name = extract(s);
+    g.no = Gate::cnt_gates;
+
+    // Increment counters
+    Gate::cnt_gates++;
+    Gate::cnt_inputs++;
+}
+
+Gate createOutput(string s) {
+    Gate g;
+    g.isInput = false;
+    g.isOutput = true;
+    g.name = extract(s);
+    g.no = Gate::cnt_gates;
+
+    // Increment counters
+    Gate::cnt_gates++;
+    Gate::cnt_outputs++;
 }

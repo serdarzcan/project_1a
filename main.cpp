@@ -10,30 +10,42 @@
  *
  * Created on November 12, 2015, 3:06 PM
  */
+#define TEST true
 
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
 #include "gate.h"
 #include <vector>
+#include "helper.h"
 
 using namespace std;
 
-/* Initialization of the static members */
+// Initialization of the static members
 int Gate::cnt_gates = 0;
 int Gate::cnt_inputs = 0;
 int Gate::cnt_outputs = 0;
 
+const string str_in = "INPUT(";
+const string str_out = "OUTPUT(";
+
 vector<Gate> gates;
 
 void process(string s) {
-    
+    // Check if it is an input
+    if (s.find(str_in) == 0) {
+        Gate toUse = createInput(s);
+    } else if (s.find(str_out)) {
+        Gate toUse = createOutput(s);
+    } else {
+        
+    }
 }
 
-/* Function to remove spaces in a string */
-string removeSpaces(string s) {
-    s.erase(remove(s.begin(), s.end(), ' '), s.end());
-    return s;
+void test() {
+    string s = "INPUT(G1gat)";
+    //cout << "text" << xxx << endl;
+    cout << extract(s) << endl;
 }
 
 /*
@@ -41,7 +53,10 @@ string removeSpaces(string s) {
  */
 int main(int argc, char** argv) {
 
-    /* Check arguments, input file should be provided */
+#if(TEST)
+    test();
+#else
+    // Check arguments, input file should be provided
     if (argc < 2) {
         cout << "Input file is not provided!" << endl;
         exit(0); // Exit the program
@@ -62,16 +77,18 @@ int main(int argc, char** argv) {
             // Check if the line is a comment or empty.
             // Safest way to do is removing leading spaces but
             // it is assumed that all of the commented lines start with #
-            if ((line[0] == "#")||(line.empty())) {
+            if ((line[0] == '#')||(line.empty())) {
                 continue;
             }
-            process(removeSpaces(&line));
+            process(removeSpaces(line));
         }
         
         if (infile.bad()) { 
             perror("Error while reading the input file!");
         }
     }
+    
+#endif
     
     return 0;
 }
