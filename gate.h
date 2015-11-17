@@ -29,8 +29,8 @@ public:
     /* Line number of the gate in the input file */
     uint no;
     
-    /* Keeps number of fanout/fanin gates of this gate */
-    uint gates_fout, gates_fin;
+    /* Keeps number of fanout of this gate */
+    uint cnt_fout;
     //vector<Gate> gates_fout, gates_fin;
 
     /* Shows if the gate is primary input or output */
@@ -40,9 +40,10 @@ public:
     Gate(const Gate& orig);
     virtual ~Gate();
     
-    bool operator==(const Gate &gate) const {
+    /*  */
+    /*bool operator==(const Gate &gate) const {
         return (name == gate.name);
-    }
+    }*/
     
     //Gate createInput(string);
     //Gate createOutput(string);

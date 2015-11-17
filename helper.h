@@ -21,7 +21,7 @@
 
 //using namespace std;
 
-// Preconstruct the results to split a string
+// Pre-construct the results to split a string by a delimeter
 std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
     std::stringstream ss(s);
     std::string item;
@@ -51,6 +51,11 @@ std::string extract(std::string s) {
     return s.substr(first+1, last-first-1);
 }
 
+// Extract string until parenthesis
+std::string beforePar(std::string s) {
+    unsigned first = s.find('(');
+    return s.substr(0,first);
+}
 
 #endif /* HELPER_H */
 

@@ -16,6 +16,7 @@
 Gate::Gate() {
     isInput = false;
     isOutput = false;
+    cnt_fout = 0;
 }
 
 Gate::Gate(const Gate& orig) { }
