@@ -21,16 +21,16 @@ using namespace std;
 class Gate {
 public:
     /* Keeps total numbers of gates, inputs and outputs in static integers. */
-    static int cnt_gates, cnt_inputs, cnt_outputs;
+    static uint cnt_gates, cnt_inputs, cnt_outputs;
 
     /* Name of the gate as in the input file and its type */
     string name, type;
     
     /* Line number of the gate in the input file */
-    int no;
+    uint no;
     
     /* Keeps number of fanout/fanin gates of this gate */
-    int gates_fout, gates_fin;
+    uint gates_fout, gates_fin;
     //vector<Gate> gates_fout, gates_fin;
 
     /* Shows if the gate is primary input or output */

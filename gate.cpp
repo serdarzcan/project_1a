@@ -13,7 +13,10 @@
 
 #include "gate.h"
 
-Gate::Gate() { }
+Gate::Gate() {
+    isInput = false;
+    isOutput = false;
+}
 
 Gate::Gate(const Gate& orig) { }
 

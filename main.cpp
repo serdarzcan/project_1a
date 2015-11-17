@@ -10,30 +10,30 @@
  *
  * Created on November 12, 2015, 3:06 PM
  */
-#define TEST false
+#define TEST true
 
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
-#include <vector>
+//#include <vector>
 #include <unordered_map>
 
 #include "gate.h"
 #include "helper.h"
-#include "hash.h"
+//#include "hash.h"
 
 using namespace std;
 
 // Initialization of the static members
-int Gate::cnt_gates = 0;
-int Gate::cnt_inputs = 0;
-int Gate::cnt_outputs = 0;
+uint Gate::cnt_gates = 0;
+uint Gate::cnt_inputs = 0;
+uint Gate::cnt_outputs = 0;
 
 const string str_in = "INPUT(";
 const string str_out = "OUTPUT(";
 
-vector<Gate> gates;
-unordered_map<string, Gate/*, Hash*/> gateMap;
+//vector<Gate> gates;
+std::unordered_map<std::string, Gate> gateMap;
 
 Gate createInput(string s) {
     // Create a gate and adjust its variables
@@ -64,30 +64,53 @@ Gate createOutput(string s) {
     return g;
 }
 
+vector<string> splitter;
+
 void process(string s) {
     //cout << "Process" << endl;
-    // Check if it is an input
+    // Check if it is an input or output
     if (s.find(str_in) == 0) {
         Gate g = createInput(s);
-        gateMap.insert(make_pair(g.name, g)); //{{g.name, g}});
-        //cout << "Input created: " << endl;
-        //cout << g.name << " " << g.isInput << " " << g.isOutput << endl;
+        if (gateMap.insert({g.name, g}).second) {
+            gateMap[g.name].isInput = true;
+        } else {
+            gateMap[g.name] = g;
+        }
     } else if (s.find(str_out) == 0) {
         Gate g = createOutput(s);
-        gateMap.insert({{g.name, g}});
-        //cout << "Output created: " << endl;
-        //cout << g.name << " " << g.isInput << " " << g.isOutput << endl;
+        if (gateMap.insert({g.name, g}).second) {
+            gateMap[g.name].isOutput = true;
+        } else {
+            gateMap[g.name] = g;
+        }
     } else {
-        
-        //cout << "Gate created" << endl;
+        splitter = split(s, '=');
     }
 }
 
+void printResults() {
+    cout << "Map size: " << gateMap.size() << "\n" << endl;
+        
+    /*Gate gg;
+    bool ok = gateMap.insert({"G1gat", gg}).second;
+    cout << "inserting 1 -> \"another one\" " 
+          << (ok ? "succeeded" : "failed") << '\n';*/
+
+    for (auto& itr: gateMap) {
+        cout << itr.first << " : " << itr.second.isInput << endl;
+    }
+    cout << "Gate count: " << Gate::cnt_gates << endl;
+    cout << "Input count: " << Gate::cnt_inputs << endl;
+    cout << "Output count: " << Gate::cnt_outputs << endl;
+    //cout << g.isOutput << "\t" << g.isInput << endl;
+}
+
 void test() {
-    //string s = "INPUT(G1gat)";
-    //cout << "text" << xxx << endl;
-    //cout << extract(s) << endl;
-    Gate g1, g2, g3, g4, g5, g6;
+    string s = "Gate1=and(G1gat,G2)";
+    //cout << "TEST "; << endl;
+    vector<string> ss = split(s, '=');
+    cout << ss[1]/*extract(removeSpaces(s))*/ << endl;
+    /*Gate g1, g2, g3, g4, g5, g6;
     
     g1.isInput = false;
     g1.isOutput = true;
@@ -113,22 +136,22 @@ void test() {
     g6.isOutput = true;
     g6.name = "G";
     
-    std::unordered_map<std::string,Gate>
+    std::unordered_map<std::string,Gate*>
               myrecipe,
-              mypantry = {{g1.name,g1},{g2.name,g2}};
+              mypantry = {{g1.name, &g1},{g2.name, &g2}};
 
-    std::pair<std::string,Gate> myshopping (g3.name, g3);
+    std::pair<std::string,Gate*> myshopping (g3.name, &g3);
 
     myrecipe.insert (myshopping);                        // copy insertion
     //myrecipe.insert (std::make_pair<string,Gate>(g4.name, g4)); // move insertion
     myrecipe.insert (mypantry.begin(), mypantry.end());  // range insertion
-    myrecipe.insert ( {{g5.name, g5},{g6.name, g6}} );    // initializer list insertion
+    myrecipe.insert ( {{g5.name, &g5},{g6.name, &g6}} );    // initializer list insertion
 
     std::cout << "myrecipe contains:" << std::endl;
     for (auto& x: myrecipe)
-      std::cout << x.first << ": " << x.second.name.length() << std::endl;
+      std::cout << x.first << ": " << x.second->name << std::endl;
 
-    std::cout << std::endl;
+    std::cout << std::endl;*/
 }
 
 /*
@@ -174,20 +197,7 @@ int main(int argc, char** argv) {
             perror("Error while reading the input file!");
         }
         
-        cout << "Map size: " << gateMap.size() << endl;
-        
-        /*Gate gg;
-        bool ok = gateMap.insert({"G1gat", gg}).second;
-        cout << "inserting 1 -> \"another one\" " 
-              << (ok ? "succeeded" : "failed") << '\n';*/
-        
-        for (auto& itr: gateMap) {
-            cout << itr.first << " : " << itr.second.name << endl;
-        }
-        cout << "Gate count: " << Gate::cnt_gates << endl;
-        cout << "Input count: " << Gate::cnt_inputs << endl;
-        cout << "Output count: " << Gate::cnt_outputs << endl;
-        //cout << g.isOutput << "\t" << g.isInput << endl;
+        printResults();
     }
     
 #endif
