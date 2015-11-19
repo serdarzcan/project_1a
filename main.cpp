@@ -10,64 +10,75 @@
  *
  * Created on November 12, 2015, 3:06 PM
  */
-#define TEST false
 
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
-//#include <vector>
 #include <unordered_map>
 
 #include "gate.h"
 #include "helper.h"
-//#include "hash.h"
 
 using namespace std;
 
 // Initialization of the static members
 uint Gate::cnt_gates = 0; // This will be used in numbering the gates
-uint Gate::cnt_inputs = 0;
-uint Gate::cnt_outputs = 0;
+/*uint Gate::cnt_inputs = 0;
+uint Gate::cnt_outputs = 0;*/
 
 const string str_in = "INPUT(";
 const string str_out = "OUTPUT(";
 
-//vector<Gate> gates;
+uint max_fanout = 0;
+
+// Keeps all of the gates
 unordered_map<string, Gate> gateMap;
+
+// Keeps histogram of fanouts
+unordered_map<uint, uint> histo;
+
+// Keeps fanin/fanout numbers of gate types
+unordered_map<string, Stats> type_stats;
+
+// To keep input/output gate numbers
 vector<uint> inp_nos, outp_nos;
 
 Gate createInput(string s) {
     // Create a gate and adjust its variables
     Gate g;
     g.isInput = true;
-    //g.isOutput = false;
+    g.type = "input";
     g.name = extract(s);
     g.no = Gate::cnt_gates;
+    
+    // Add gate number to input no vector
+    inp_nos.push_back(Gate::cnt_gates);
 
     // Increment counters
     Gate::cnt_gates++;
-    Gate::cnt_inputs++;
+    //Gate::cnt_inputs++;
     
     return g;
 }
 
 Gate createOutput(string s) {
     Gate g;
-    //g.isInput = false;
     g.isOutput = true;
+    g.type = "output"; // It will be overwritten anyway
     g.name = extract(s);
     g.no = Gate::cnt_gates;
+    //g.cnt_fout = 0;
+    
+    // Add gate number to output no vector
+    outp_nos.push_back(Gate::cnt_gates);
 
     // Increment counters
     Gate::cnt_gates++;
-    Gate::cnt_outputs++;
+    histo[1] += 1; // Primary output gates have 1 fanout
+    //Gate::cnt_outputs++;
     
     return g;
 }
-
-struct stats {
-    uint count, fanout, fanin;
-};
 
 vector<string> splt;
 vector<string> inGates;
@@ -96,59 +107,67 @@ void process(string s) {
             gateMap[splt[0]].name = splt[0];
         }
         // Update gate info
-        gateMap[splt[0]].type = beforePar(splt[1]);
-        gateMap[splt[0]].no = Gate::cnt_gates;
-
-        Gate::cnt_gates++;
+        gateMap[splt[0]].type = returnStringBefore(splt[1], '(');
+        /*if (!gateMap[splt[0]].isOutput) {
+            gateMap[splt[0]].no = Gate::cnt_gates;
+            Gate::cnt_gates++;
+        }*/
         
         // Analyze input gates
         inGates = split(extract(splt[1]), ',');
         Gate ig;
         for (auto itr: inGates) {
             if (gateMap.insert({itr, ig}).second) {
-                // New gate created
-                gateMap[itr].cnt_fout++;
+                // New gate created, update name
+                gateMap[itr].name = itr;
             }
+            gateMap[itr].cnt_fout++;
+            if (gateMap[itr].cnt_fout > max_fanout) {
+                max_fanout = gateMap[itr].cnt_fout;
+            }
+            gateMap[splt[0]].gates_fin.push_back(itr);
         }
     }
 }
 
-void printResults() {
-    cout << "Map size: " << gateMap.size() << "\n" << endl;
-        
-    /*Gate gg;
-    bool ok = gateMap.insert({"G1gat", gg}).second;
-    cout << "inserting 1 -> \"another one\" " 
-          << (ok ? "succeeded" : "failed") << '\n';*/
-
-    for (auto& itr: gateMap) {
-        cout << itr.first << " : " << itr.second.isInput << endl;
+void printResults(string s) {
+    
+    ofstream outfile;
+    outfile.open(s+".out");
+    //cout << "Map size: " << gateMap.size() << "\n" << endl;
+    outfile << max_fanout << endl;
+    for (int i = 0; i <= max_fanout; i++) {
+        outfile << histo[i] << endl;
     }
-    cout << "Gate count: " << Gate::cnt_gates << endl;
-    cout << "Input count: " << Gate::cnt_inputs << endl;
-    cout << "Output count: " << Gate::cnt_outputs << endl;
-    //cout << g.isOutput << "\t" << g.isInput << endl;
-}
-
-void test() {
-    string s = "Gate1=and(G1gat,G2)";
-    //cout << "TEST "; << endl;
-    vector<string> ss = split(s, '=');
-    vector<string> ss2 = split(extract(ss[1]), ',');
-    cout << ss2[0] << "    " << ss2[1]/*extract(removeSpaces(s))*/ << endl;
+    
+    outfile << inp_nos.size();
+    for (auto itr: inp_nos) {
+        outfile << " " << itr;
+    }
+    
+    outfile << "\n" << outp_nos.size();
+    for (auto itr: outp_nos) {
+        outfile << " " << itr;
+    }
+    
+    outfile << endl;
+    for (auto itr: type_stats) {
+        outfile << itr.first << " " << itr.second.count << " " << 
+                itr.second.fanout.size() << " " << 
+                itr.second.fanin.size() << endl;
+    }
+    
+    outfile.close();
+    cout << "Results were printed: " << s << ".out" << endl;
 }
 
 /*
  * Main function
  */
 int main(int argc, char** argv) {
-
-#if(TEST)
-    test();
-#else
     // Check arguments, input file should be provided
     if (argc < 2) {
-        cout << "Input file is not provided!" << endl;
+        perror("Input file is not provided!");
         exit(0); // Exit the program
     } else {
         ifstream infile;
@@ -158,7 +177,7 @@ int main(int argc, char** argv) {
         if (!infile.is_open()) { 
             perror("Error while opening the input file!");
         } else {        
-            cout << "File opened!" << endl;
+            cout << "File opened: " << argv[1] << endl;
         }
         
         string line;
@@ -181,53 +200,44 @@ int main(int argc, char** argv) {
             perror("Error while reading the input file!");
         }
         
-        printResults();
+        // Iterate through the map to construct fanout histogram and
+        // find fanin/fanout numbers of gate types.
+        for (auto& itr: gateMap) {
+            //cout << itr.first << " : " << itr.second.type << endl;
+            // Histogram
+            histo[itr.second.cnt_fout] += 1;
+            /*if (itr.second.isOutput) {
+                histo[1] += 1; // Output gates have 1 fanout
+            }*/
+            
+            // Fanin/fanout analysis
+            if (itr.second.type != "input") {
+                // Try to create a tuple with Stats for that gate type
+                // if there isn't any
+                Stats s;
+                if (!type_stats.insert({itr.second.type, s}).second) {
+                    // If there is, increment count
+                    type_stats[itr.second.type].count++;
+                }
+                
+                // Analyze fanin gates
+                if (!itr.second.gates_fin.empty()) {
+                    //cout << "in if" << itr.second.name <<  endl;
+                    for (auto& g_itr: itr.second.gates_fin) {
+                        //cout << " in for" << endl;
+                        //cout << g_itr << endl;
+                        if (gateMap[g_itr].type == itr.second.type) {
+                            //cout << " in 2. if" << endl;
+                            type_stats[itr.second.type].fanout.insert(g_itr);
+                            type_stats[itr.second.type].fanin.insert(itr.second.name);
+                        }
+                    }
+                }
+            }
+        }
+        
+        printResults(returnStringBefore(argv[1], '.'));
     }
-    
-#endif
     
     return 0;
 }
-
-/*Gate g1, g2, g3, g4, g5, g6;
-    
-    g1.isInput = false;
-    g1.isOutput = true;
-    g1.name = "G22gat";
-    
-    g2.isInput = false;
-    g2.isOutput = true;
-    g2.name = "G23gat";
-    
-    g3.isInput = true;
-    g3.isOutput = true;
-    g3.name = "G1gat";
-    
-    g4.isInput = false;
-    g4.isOutput = true;
-    g4.name = "GG";
-    
-    g5.isInput = false;
-    g5.isOutput = true;
-    g5.name = "GGG";
-    
-    g6.isInput = false;
-    g6.isOutput = true;
-    g6.name = "G";
-    
-    std::unordered_map<std::string,Gate*>
-              myrecipe,
-              mypantry = {{g1.name, &g1},{g2.name, &g2}};
-
-    std::pair<std::string,Gate*> myshopping (g3.name, &g3);
-
-    myrecipe.insert (myshopping);                        // copy insertion
-    //myrecipe.insert (std::make_pair<string,Gate>(g4.name, g4)); // move insertion
-    myrecipe.insert (mypantry.begin(), mypantry.end());  // range insertion
-    myrecipe.insert ( {{g5.name, &g5},{g6.name, &g6}} );    // initializer list insertion
-
-    std::cout << "myrecipe contains:" << std::endl;
-    for (auto& x: myrecipe)
-      std::cout << x.first << ": " << x.second->name << std::endl;
-
-    std::cout << std::endl;*/

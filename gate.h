@@ -15,6 +15,7 @@
 #define GATE_H
 
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -31,7 +32,9 @@ public:
     
     /* Keeps number of fanout of this gate */
     uint cnt_fout;
-    //vector<Gate> gates_fout, gates_fin;
+    
+    /* Keeps names of fanin gates */
+    vector<string> gates_fin;
 
     /* Shows if the gate is primary input or output */
     bool isInput, isOutput;

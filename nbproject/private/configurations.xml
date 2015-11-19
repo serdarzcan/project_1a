@@ -27,10 +27,13 @@
       <runprofile version="9">
         <runcommandpicklist>
           <runcommandpicklistitem>test.in</runcommandpicklistitem>
-          <runcommandpicklistitem>"${OUTPUT_PATH}"</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" test.in</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" b15_C.in</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" c499.in</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}"</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" c17.in</runcommandpicklistitem>
         </runcommandpicklist>
-        <runcommand>"${OUTPUT_PATH}" test.in</runcommand>
+        <runcommand>"${OUTPUT_PATH}" c17.in</runcommand>
         <rundir></rundir>
         <buildfirst>true</buildfirst>
         <terminal-type>0</terminal-type>

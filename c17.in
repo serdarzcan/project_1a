@@ -1,4 +1,5 @@
 # Some initial comments that are ignored here
+
 INPUT(G1gat)
 INPUT(G2gat)
 INPUT(G3gat)
@@ -6,6 +7,7 @@ INPUT(G6gat)
 INPUT(G7gat)
 OUTPUT(G22gat)
 OUTPUT(G23gat)
+
 G10gat = nand(G1gat, G3gat)
 G11gat = nand(G3gat, G6gat)
 G16gat = nand(G2gat, G11gat)

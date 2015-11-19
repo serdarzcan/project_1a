@@ -27,6 +27,7 @@
         <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
             <word>canxx</word>
             <word>cpp</word>
+            <word>fanin</word>
         </spellchecker-wordlist>
     </configuration>
 </project>

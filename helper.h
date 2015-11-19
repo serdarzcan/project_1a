@@ -18,8 +18,15 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <unordered_set>
 
-//using namespace std;
+// This structure is used at collecting fanin/fanout numbers
+// of gate types
+struct Stats {
+    uint count;
+    unordered_set<string> fanout, fanin;
+    Stats() {count=1;}
+};
 
 // Pre-construct the results to split a string by a delimeter
 std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
@@ -52,8 +59,8 @@ std::string extract(std::string s) {
 }
 
 // Extract string until parenthesis
-std::string beforePar(std::string s) {
-    unsigned first = s.find('(');
+std::string returnStringBefore(std::string s, char c) {
+    unsigned first = s.find(c);
     return s.substr(0,first);
 }
 
