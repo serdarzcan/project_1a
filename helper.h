@@ -59,7 +59,7 @@ std::string extract(std::string s) {
 }
 
 // Extract string until parenthesis
-std::string returnStringBefore(std::string s, char c) {
+std::string returnStringBefore(std::string s, string c) {
     unsigned first = s.find(c);
     return s.substr(0,first);
 }

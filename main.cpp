@@ -64,7 +64,7 @@ Gate createInput(string s) {
 Gate createOutput(string s) {
     Gate g;
     g.isOutput = true;
-    g.type = "output"; // It will be overwritten anyway
+    //g.type = "output"; // It will be overwritten anyway
     g.name = extract(s);
     g.no = Gate::cnt_gates;
     //g.cnt_fout = 0;
@@ -107,7 +107,7 @@ void process(string s) {
             gateMap[splt[0]].name = splt[0];
         }
         // Update gate info
-        gateMap[splt[0]].type = returnStringBefore(splt[1], '(');
+        gateMap[splt[0]].type = returnStringBefore(splt[1], "(");
         /*if (!gateMap[splt[0]].isOutput) {
             gateMap[splt[0]].no = Gate::cnt_gates;
             Gate::cnt_gates++;
@@ -116,17 +116,24 @@ void process(string s) {
         // Analyze input gates
         inGates = split(extract(splt[1]), ',');
         Gate ig;
-        for (auto itr: inGates) {
+        //ofstream log;
+        //log.open("log.out");
+        for (auto& itr: inGates) {
             if (gateMap.insert({itr, ig}).second) {
                 // New gate created, update name
                 gateMap[itr].name = itr;
             }
-            gateMap[itr].cnt_fout++;
+            gateMap[itr].cnt_fout += 1;
+            /*if (gateMap[itr].name == "U14546") {
+                log << gateMap[splt[0]].name << endl;//": " << gateMap[itr].cnt_fout << endl;
+            }*/
             if (gateMap[itr].cnt_fout > max_fanout) {
+                //log << "INCREASED  " << gateMap[itr].name << ": " << gateMap[itr].cnt_fout << endl;
                 max_fanout = gateMap[itr].cnt_fout;
             }
             gateMap[splt[0]].gates_fin.push_back(itr);
         }
+        //log.close();
     }
 }
 
@@ -134,11 +141,18 @@ void printResults(string s) {
     
     ofstream outfile;
     outfile.open(s+".out");
+    ofstream log;
+    log.open("log.out");
+    
+    for (auto& itr: gateMap) {
+        log << itr.second.name << ": " << itr.second.cnt_fout << endl;
+    }
+    log.close();
     //cout << "Map size: " << gateMap.size() << "\n" << endl;
     outfile << max_fanout << endl;
-    for (int i = 0; i <= max_fanout; i++) {
+    /*for (int i = 0; i <= max_fanout; i++) {
         outfile << histo[i] << endl;
-    }
+    }*/
     
     outfile << inp_nos.size();
     for (auto itr: inp_nos) {
@@ -236,7 +250,7 @@ int main(int argc, char** argv) {
             }
         }
         
-        printResults(returnStringBefore(argv[1], '.'));
+        printResults(returnStringBefore(argv[1], ".in"));
     }
     
     return 0;

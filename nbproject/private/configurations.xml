@@ -13,8 +13,6 @@
         <gdb_interceptlist>
           <gdbinterceptoptions gdb_all="false" gdb_unhandled="true" gdb_unexpected="true"/>
         </gdb_interceptlist>
-        <gdb_signals>
-        </gdb_signals>
         <gdb_options>
           <DebugOptions>
           </DebugOptions>
@@ -28,12 +26,13 @@
         <runcommandpicklist>
           <runcommandpicklistitem>test.in</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" test.in</runcommandpicklistitem>
-          <runcommandpicklistitem>"${OUTPUT_PATH}" b15_C.in</runcommandpicklistitem>
-          <runcommandpicklistitem>"${OUTPUT_PATH}" c499.in</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}"</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" c17.in</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" c499.in</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" b15_C.in</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" c432.in</runcommandpicklistitem>
         </runcommandpicklist>
-        <runcommand>"${OUTPUT_PATH}" c17.in</runcommand>
+        <runcommand>"${OUTPUT_PATH}" c432.in</runcommand>
         <rundir></rundir>
         <buildfirst>true</buildfirst>
         <terminal-type>0</terminal-type>
